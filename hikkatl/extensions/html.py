@@ -59,6 +59,8 @@ class HTMLToTelegramParser(HTMLParser):
             EntityType = MessageEntityStrike
         elif tag == 'blockquote':
             EntityType = MessageEntityBlockquote
+        elif tag == 'blockquote expand':
+            EntityType = MessageEntityBlockquote
         elif tag == 'code':
             try:
                 # If we're in the middle of a <pre> tag, this <code> tag is
@@ -166,6 +168,7 @@ class TextDecoration(ABC):
             MessageEntityUnderline: "underline",
             MessageEntityStrike: "strikethrough",
             MessageEntityBlockquote: "blockquote",
+            MessageEntityBlockquote: "blockquote expand",
         }
         if type(entity) in entity_map:
             if re.match(r"^<emoji document_id=\"?\d+?\"?>[^<]*?<\/emoji>$", text):
@@ -327,6 +330,9 @@ class HtmlDecoration(TextDecoration):
 
     def blockquote(self, value: str) -> str:
         return f"<blockquote>{value}</blockquote>"
+
+    def blockquote_expand(self, value: str, document_id: str) -> str:
+        return f"<blockquote expand>{value}</blockquote>"
 
     def custom_emoji(self, value: str, document_id: str) -> str:
         return f"<emoji document_id={document_id}>{value}</emoji>"
